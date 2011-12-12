@@ -1,0 +1,32 @@
+To Start the app run the following commands...
+
+[polltweet]$ bundle exec rails runner StreamReader.sync 
+[polltweet]$ QUEUE=* rake environment resque:work
+[polltweet]$ redis-server
+[polltweet]$ resque-web
+
+ENV Variables need to be set for Twitter before running. 
+Create/Edit a .profile file and add...
+
+export twitter_ck="consumer key value"
+export twitter_cs="consumer key secret value"
+export twitter_at="oauth token value"
+export twitter_ats="oauth token secret"
+
+
+Add on top line of .bash_profile...
+source ~/.profile
+
+
+TODO:
+Add Rest API downloading to back fill data incase of twitter stream failure
+and to substitute until site stream is ready.
+
+Create stream to monitor "#r" upon #r, download and back fill data with rest API.
+
+
+
+
+
+
+
