@@ -7,15 +7,22 @@ gem 'rails', '3.1.1'
 
 gem 'sqlite3'
 
-#MY ADDITIONS#############
+
 #Gems needed parsing, streaming, charting and pattern matching
-gem 'yajl-ruby'
-gem "tweetstream"
-gem 'googlecharts'
-gem 'amatch'
-gem 'twitter'
-gem 'resque'
-##########################
+gem 'yajl-ruby'  # unknown
+
+gem 'googlecharts'  #Charts
+gem 'amatch'   # Pattern matching
+
+gem 'resque'  # Background processing
+
+gem 'devise', '1.5.1'  # Authentication
+gem 'omniauth', '1.0.1' # Oauth authenication
+gem "omniauth-twitter" #Oauth specific to twitter
+
+gem 'twitter'  # twitter REST API
+gem "tweetstream"  #twitter stream API
+#############################################################
 
 
 
