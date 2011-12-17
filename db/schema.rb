@@ -11,7 +11,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111207224841) do
+ActiveRecord::Schema.define(:version => 20111214220741) do
+
+  create_table "oauth_users", :force => true do |t|
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "name"
+    t.string   "email"
+    t.string   "nickname"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "location"
+    t.string   "image"
+    t.string   "phone"
+    t.text     "urls"
+    t.string   "oauth_token"
+    t.string   "oauth_secret"
+    t.text     "raw_info"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "polls", :force => true do |t|
     t.integer  "tweet_id"

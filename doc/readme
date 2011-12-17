@@ -17,6 +17,17 @@ export twitter_ats="oauth token secret"
 Add on top line of .bash_profile...
 source ~/.profile
 
+##################################################
+REFACTOR.............
+def mydata(f)
+   { :place  => f.place, :geo => f.geo }
+end
+
+Something.each {|f| Bla.create(mydata(f))}
+AnotherThing.each {|f| Bizfoo.create(mydata(f))}
+###################################################
+
+
 
 TODO:
 Add Rest API downloading to back fill data incase of twitter stream failure
