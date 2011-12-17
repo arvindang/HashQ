@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   
   # find the oauth record and assign the user_id to it
   def save_twitter_id
-    oauth1=Oauth1.find_by_uid(self.twitter_id)
+    oauth1=Oauth.find_by_uid(self.twitter_id)
     oauth1.update_attributes(:user_id => self.id)
   end
   
