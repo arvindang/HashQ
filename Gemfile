@@ -9,8 +9,6 @@ gem 'sqlite3'
 
 
 #Gems needed parsing, streaming, charting and pattern matching
-gem 'yajl-ruby'  # unknown
-
 gem 'googlecharts'  #Charts
 gem 'amatch'   # Pattern matching
 
@@ -22,6 +20,7 @@ gem "omniauth-twitter" #Oauth specific to twitter
 
 gem 'twitter'  # twitter REST API
 gem "tweetstream"  #twitter stream API
+gem 'yajl-ruby'  # used for tweetstream parsing
 #############################################################
 
 

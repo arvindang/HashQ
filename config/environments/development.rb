@@ -1,6 +1,38 @@
 Hashqit::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
+  ##################################################################
+  #Mailer settings for Devise mailings
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.delivery_method = :smtp
+
+  #gmail mailer settings
+  config.action_mailer.smtp_settings = {
+    :enable_starttls_auto => true,
+    :address => "smtp.gmail.com",
+    :port => 587,
+    :domain => "gmail.com",
+    :authentication => :login,
+    :user_name => ENV['gmail_address'],
+    :password => ENV['gmail_password']
+  }
+
+  #This openSSL stuff is temperary to get Omniauth-twitter working.....
+    OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+  
+  #################################################################
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
