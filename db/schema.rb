@@ -13,25 +13,6 @@
 
 ActiveRecord::Schema.define(:version => 20111217174753) do
 
-  create_table "oauth_users", :force => true do |t|
-    t.string   "provider"
-    t.string   "uid"
-    t.string   "name"
-    t.string   "email"
-    t.string   "nickname"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "location"
-    t.string   "image"
-    t.string   "phone"
-    t.text     "urls"
-    t.string   "oauth_token"
-    t.string   "oauth_secret"
-    t.text     "raw_info"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "oauths", :force => true do |t|
     t.string   "provider"
     t.string   "uid"
@@ -41,6 +22,7 @@ ActiveRecord::Schema.define(:version => 20111217174753) do
     t.string   "first_name"
     t.string   "last_name"
     t.string   "location"
+    t.string   "description"
     t.string   "image"
     t.string   "phone"
     t.text     "urls"
@@ -80,6 +62,8 @@ ActiveRecord::Schema.define(:version => 20111217174753) do
     t.string   "id_str"
     t.string   "in_reply_to_user_id"
     t.string   "contributors"
+    t.integer  "status_id"
+    t.string   "uid"
     t.text     "user"
     t.string   "category"
     t.datetime "updated_at"

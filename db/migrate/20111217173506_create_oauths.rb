@@ -9,12 +9,13 @@ class CreateOauths < ActiveRecord::Migration
       t.string :first_name
       t.string :last_name
       t.string :location
+      t.string :description
       t.string :image
       t.string :phone
-      t.text :urls
+      t.text   :urls
       t.string :oauth_token
       t.string :oauth_secret
-      t.text :extra
+      t.text   :extra
       t.integer :user_id
 
       t.timestamps

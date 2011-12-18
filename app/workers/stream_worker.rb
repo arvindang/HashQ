@@ -5,11 +5,8 @@ class StreamWorker
   extend Amatch
   
   def self.perform(twt_data)
-    #puts twt_data
-    
     # Create record of tweet
     @tweet=Tweet.create(twt_data)
-  
    
     if @tweet.in_reply_to_user_id_str.blank?
       p "In reply to:"
@@ -26,11 +23,6 @@ class StreamWorker
         poll_vote(@tweet)
       end
     end
-  
-    #Output tweet text in terminal (informational)
-   # user.screen_name does not work.  data was serialized, but ??
-   # puts "#{twt_data.screen_name} #{twt_data.text}"
-    
   end
   
 ###################################################################

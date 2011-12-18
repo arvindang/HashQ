@@ -19,6 +19,8 @@ class CreateTweets < ActiveRecord::Migration
       t.string :id_str
       t.string :in_reply_to_user_id
       t.string :contributors
+      t.integer :status_id
+      t.string :uid
       t.text :user
       t.string :category
 
