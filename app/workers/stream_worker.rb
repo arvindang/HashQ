@@ -8,9 +8,9 @@ class StreamWorker
     # Create record of tweet
     @tweet=Tweet.create(twt_data)
    
-    if @tweet.in_reply_to_user_id_str.blank?
+    if @tweet.in_reply_to_user_id.blank?
       p "In reply to:"
-      p @tweet.in_reply_to_user_id_str
+      p @tweet.in_reply_to_user_id
       p "Creating Poll"
       poll_create(@tweet)
     else
@@ -42,27 +42,37 @@ class StreamWorker
     #Convert my array to a hash with poll result starting at 0
     answers_hash = {}
     answer_array.each { |i| answers_hash[i] = 0 }
-
-    Poll.create(:tweet_id=>tweet.id, :id_str=>tweet.id_str ,:question=>question, :answers=>answers_hash)
-    p "created poll"
     
+    p "before create:"
+    p tweet.id
+    p tweet.twitter_tweet_id
+    p question
+    p answers_hash
+    p "xxxxxxxxxxxxxxxxxxxxx"
+    new_poll = Poll.create(:tweet_id=>tweet.id, :twitter_tweet_id => tweet.twitter_tweet_id ,:question=>question, :answers=>answers_hash)
+    p "created poll:"
+    p new_poll
     
   end
 
   def self.poll_vote(tweet)
-    orig_poll=Poll.find_by_id_str(tweet.in_reply_to_status_id_str)
-    category=category_match(tweet,orig_poll)  
-    p "CLASSIFIED AS:"
-    p category
-    tweet.category=category
-    tweet.save
-    orig_poll.answers[category]+=1
-    orig_poll.save
-    p "saved category and added to tally"
+    orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+ 
+    if orig_poll
+      category=category_match(tweet,orig_poll)  
+      p "CLASSIFIED AS:"
+      p category
+      tweet.category=category
+      tweet.save
+      orig_poll.answers[category]+=1
+      orig_poll.save
+      p "saved category and added to tally"
+    end
+ 
   end
 
   def self.poll_results(tweet)
-    orig_poll=Poll.find_by_id_str(tweet.in_reply_to_status_id_str)
+    orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
     
     # Create title for graph
     title="Results: #{orig_poll.question}"
@@ -84,7 +94,7 @@ class StreamWorker
     chart.file
     p "Saved chart"
     new_tweet=Twitter.new
-    new_tweet.update_with_media("Results:",File.new("tmp/charts/#{tweet.id}.png"), options={:in_reply_to_status_id => 145609054084018176})
+    new_tweet.update_with_media("Results:",File.new("tmp/charts/#{tweet.id}.png"), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
     p "sent tweet with image"
     
   end

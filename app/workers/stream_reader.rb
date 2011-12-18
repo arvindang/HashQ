@@ -15,7 +15,8 @@ class StreamReader
     @client.userstream do |status|
   
       begin
-      
+      p "GOT MESSAGE"
+
         twt_data= tweet_hash(status)
         p twt_data
         Resque.enqueue(StreamWorker, twt_data)

@@ -2,7 +2,7 @@ class CreatePolls < ActiveRecord::Migration
   def change
     create_table :polls do |t|
       t.integer :tweet_id
-      t.string :id_str
+      t.integer :twitter_tweet_id
       t.string :question
       t.text :answers
 

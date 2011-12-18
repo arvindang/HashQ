@@ -2,7 +2,7 @@ class CreateOauths < ActiveRecord::Migration
   def change
     create_table :oauths do |t|
       t.string :provider
-      t.string :uid
+      t.integer :uid
       t.string :name
       t.string :email
       t.string :nickname
