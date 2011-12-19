@@ -1,18 +1,33 @@
-<h2>Sign up</h2>
+<div id="signup_container">
+	
+	<div class = "left_body_signup">	
 
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-  <%= devise_error_messages! %>
+		<div id="sign_up">
+			<h2 class="left_title">Sign up</h2>
+		
+			<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+			  <%= devise_error_messages! %>
+			
+			  <%= f.email_field :email, :placeholder => "E-mail", :class => "field_for" %>
+			  <%= f.password_field :password, :placeholder => "Password", :class => "field_for" %>
+			  <%= f.password_field :password_confirmation, :placeholder => "Password Confirmation", :class => "field_for" %>
+			  <%= f.submit "Sign up", :class => "btn_show" %>
+			<% end %>
+		
+		</div>
+	</div>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
 
-  <div><%= f.label :password %><br />
-  <%= f.password_field :password %></div>
 
-  <div><%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation %></div>
-
-  <div><%= f.submit "Sign up" %></div>
-<% end %>
-
-<%= render :partial => "devise/shared/links" %>
+	<div class= "right_body_signup">
+			<h2 class="left_title">Complete Your Registration</h2>
+			<p>We love that you're using #q! To complete your registration, please sign up to the left. <br/><br/>
+				We'll start following your account and keep track of all your #q's no matter what Twitter client you post 				
+				from.</p>
+						
+		<span class="devise"><%= render :partial => "devise/shared/links" %></span>	
+	</div>
+	
+	<div class="clear"></div>
+	
+</div>

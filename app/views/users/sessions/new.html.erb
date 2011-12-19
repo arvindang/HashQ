@@ -1,17 +1,34 @@
-<h2>Sign in</h2>
+<div id="signup_container">
 
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
+	<div class = "left_body_signup">	
+		<div id="sign_up">
+			<h2 class="left_title">Sign In</h2>
 
-  <div><%= f.label :password %><br />
-  <%= f.password_field :password %></div>
+			<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+			  <%= f.email_field :email, :placeholder => "E-mail", :class => "field_for" %>
 
-  <% if devise_mapping.rememberable? -%>
-    <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
-  <% end -%>
+			  <%= f.password_field :password, :placeholder => "Password", :class => "field_for" %>
 
-  <div><%= f.submit "Sign in" %></div>
-<% end %>
+				<div id="checkbox">	
+					<% if devise_mapping.rememberable? -%>
+				    <%= f.check_box :remember_me %>
+				 		<%= f.label :remember_me, :class => "remember_text" %>
+				  <% end %>
+				</div>
+				
+				<div class="clear"></div>
 
-<%= render :partial => "devise/shared/links" %>
+			  <%= f.submit "Sign in", :class => "btn_show" %>
+			<% end %>
+			</div>
+	</div>	
+
+	<div class ="right_body_signup">
+		<span class="devise_signin"><%= render :partial => "devise/shared/links" %></span>
+	
+		<span class="notice"><%= notice %></span>
+	    <span class="alert"><%= alert %></span>
+	
+	</div>	
+
+</div>

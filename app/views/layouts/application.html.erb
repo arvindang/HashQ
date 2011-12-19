@@ -13,9 +13,40 @@
 
 
 </head>
-<body id='page'>
+<div id="container">
 
-<%= yield %>
+	<div id="logo">
+		<%= link_to image_tag("logo_hash_red.png"), root_url %>
+	
+		<div id="right_corner">
+			<div id="user_nav">
+			  <% if user_signed_in? %>
+			    Signed in as <%= current_user.email %>. Not you?
+			    <%= link_to "Sign out", destroy_user_session_path, :method => :delete %>
+			  <% else %>
+			    <%= link_to "Sign up", new_user_registration_path %> or <%= link_to "sign in", new_user_session_path %>
+			  <% end %>
+			</div>
 
-</body>
+			
+			
+		
+		
+		</div>
+	
+	</div>
+
+	<div id="logo_text">
+		The simplest way to poll your Twitter followers.
+	</div>
+
+	<div class="clear"></div>
+
+	<body id='page'>
+
+	<%= yield %>
+
+	</body>
+
+</div>
 </html>
