@@ -6,7 +6,8 @@
 	
 		<span class="notice"><%= notice %></span>
     	<span class="alert"><%= alert %></span>
-	
+		
+
 </div>
 
 <div class="left_body">
@@ -23,9 +24,26 @@
 			<%= submit_tag "Tweet", :class=>'btn' %>
 		<% end %>
 		
+		
 		<a href="#" data-content="Post your first question above. Once you authenticate your Twitter account, we'll follow you to track each of your #q's going forward" rel="popover" class="explain">How's it work?</a>
 	</div>
-	
+		<% unless @errors.nil? %> 
+		<div id='tweet_errors'>
+			<h3>Could not send Tweet, please fix:</h3>
+			<ul>
+				<% @errors.each do |error|%>
+				<li><%= error %></li>
+				<% end %>
+			<ul>
+		</div>
+		<% else %>
+			<div id="sent_tweet">
+				<span class="alert"><%= @sent_tweet %></span>
+			</div>
+		<% end %>
+		
+		
+		
 </div>
 
 <div class="clear"></div>

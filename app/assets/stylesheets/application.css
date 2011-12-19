@@ -306,3 +306,12 @@
 	color: #f00000;
 /*	opacity:0.9;*/
 }
+
+#sent_tweet{
+	margin-left: 20px;
+	margin-top: 35px;
+}
+
+#tweet_errors ul li{
+	font-size:15px;
+}

@@ -19,6 +19,26 @@ class Oauth < ActiveRecord::Base
     end
   end
   
+ def follow_each_other
+    unless self.uid==433563171
+      oauth=Oauth.find_by_uid("433563171")
+       if oauth
+          oauth.sign_in
+          Twitter.new.follow(self.uid)
+       end
+       self.sign_in
+       Twitter.new
+       Twitter.follow("hashqit")
+      #Twitter.accept("hashqit") (BUG DOES NOT WORK)
+    end
+ end
+ 
+ def send_tweet(message)
+     self.sign_in
+     Twitter.new
+     Twitter.update(message)
+ end
+ 
   def sign_in 
     Twitter.configure do |config|
       config.oauth_token = self.oauth_token
