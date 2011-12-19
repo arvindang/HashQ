@@ -1,7 +1,7 @@
 # rails runner ....
 require 'mymodule'
  
-class StreamReader
+class RestReader
  
   extend Mymodule
   
@@ -16,12 +16,19 @@ class StreamReader
   
       begin
       p "GOT MESSAGE"
-
-        twt_data= tweet_hash(status)
-        p twt_data
         
-        Resque.enqueue(StreamWorker, twt_data)
-   
+    
+        if status.text.downcase.include? "#r"
+          p "includes #r:"
+          unless status.in_reply_to_user_id.blank?
+            p "it is a reply:"
+            p status.user.id
+            if Oauth.find_by_uid(status.user.id)
+                Resque.enqueue(TwitterRest,status.user.id)
+            end
+          end
+        end
+        
       rescue => e
         puts "Couldnt insert tweet. Possibly db lock error"
         puts e.message

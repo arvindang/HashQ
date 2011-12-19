@@ -2,8 +2,10 @@
 require 'mymodule'
 
 class TwitterRest
-  
-  extend Mymodule
+
+@queue = "rest_data"
+
+extend Mymodule
   
   def self.sync
     
@@ -17,6 +19,11 @@ class TwitterRest
     
   end
   
+  def self.perform(uid)
+      p "Sent to be processed"
+      p uid
+      get_tweets(uid)
+  end
     
   
   def self.get_tweets(uid)

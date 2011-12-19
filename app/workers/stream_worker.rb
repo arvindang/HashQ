@@ -15,7 +15,7 @@ class StreamWorker
       poll_create(@tweet)
     else
     
-      if @tweet.text.include? "#r"
+      if @tweet.text.downcase.include? "#r"
        p "Getting Results"
         poll_results(@tweet)
       else  
@@ -29,7 +29,7 @@ class StreamWorker
   def self.poll_create(tweet)
     poll_text=tweet.text
 
-    poll_regex=/#q([^?]+?)\?\s*((?:[^,]+(?:,|$))+)/
+    poll_regex=/#q([^?]+?)\?\s*((?:[^,]+(?:,|$))+)/i
 
     return if poll_regex.match(poll_text).nil?
 
