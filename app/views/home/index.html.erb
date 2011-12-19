@@ -1,0 +1,56 @@
+
+<div id="container">
+	<div id="logo">
+		<%= link_to image_tag("logo_hash_red.png"), root_url %>
+	</div>
+
+	<div id="logo_text">
+		The simplest way to poll your Twitter followers.
+	</div>
+	
+	<div class="clear"></div>
+	
+	<div class="right_body">
+		<div class="right_body_title">What is hashq.it?</div>
+		<p>We're the fastest polling service on Twitter. Post your first question to the left, register your Twitter account and you're all set.</p>
+		<p>From now on, use the <span class="q_type">#q</span> schema to post a question from  <em>any</em> of your favorite Twitter clients, and we'll keep track of the question, the votes, and the results for you. Reply to any <span class="q_type">#q</span> with <span class="r_type">#r</span> to see the  results.</p>
+	</div>
+	
+	<div class="left_body">
+		<p class="left_body_title">Ask your first question: <span id="tweet-count" style ="float:right"></span></p>
+		
+		<div class="tweet">
+			
+			<span id="validquestion"></span><span id="charlimitinfo" >140</span>
+			<form>
+				<textarea wrap='on' id="q" placeholder="#q What's your favorite color? red; purple; green"></textarea>
+				<input class="btn" type="submit" value="Tweet">
+			</form>
+
+			
+			<a href="#" data-content="Post your first question above. Once you authenticate your Twitter account, we'll follow you to track each of your #q's going forward" rel="popover" class="explain">How's it work?</a>
+		</div>
+		
+	</div>
+	
+	<div class="clear"></div>
+	
+	<div id="main">
+		
+		<div id="ask">
+			<h2>Ask.</h2>
+			<p>Start your question with #q so we know you're talking to us.</p>
+		</div>
+		
+		<div id="vote">
+			<h2>Vote.</h2>
+			<p>Your followers vote by replying to your tweet with their response.</p>
+		</div>
+		
+		<div id="result">
+			<h2>Results.</h2>
+			<p>Reply to your original tweet with #r at anytime to see the current tally.</p>
+		</div>
+	
+	</div>
+</div>

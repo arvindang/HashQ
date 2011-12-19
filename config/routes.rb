@@ -1,10 +1,12 @@
 Hashqit::Application.routes.draw do
  
+  get "home/index"
+
   # create paths for devise users and direct to custom callback and registration
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks", :registrations => "users/registrations" }
 
   # Set home page, (STILL NEED TO BUILD!!!)
-  root :to => "homes#index"
+  root :to => "home#index"
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
