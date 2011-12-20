@@ -1,0 +1,12 @@
+[Mon Dec 19 22:28:19 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:28:19 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:28:20 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:28:20 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:28:29 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:28:30 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:33:55 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:33:55 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:33:57 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:33:57 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:34:00 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
+[Mon Dec 19 22:34:00 2011] [crit] [client 65.189.192.46] (13)Permission denied: /root/.htaccess pcfg_openfile: unable to check htaccess file, ensure it is readable
