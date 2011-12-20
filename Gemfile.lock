@@ -72,6 +72,7 @@ GEM
     mime-types (1.17.2)
     multi_json (1.0.4)
     multipart-post (1.1.4)
+    mysql2 (0.3.11)
     oauth (0.4.5)
     omniauth (1.0.1)
       hashie (~> 1.2)
@@ -176,6 +177,7 @@ DEPENDENCIES
   devise (= 1.5.1)
   googlecharts
   jquery-rails
+  mysql2
   omniauth (= 1.0.1)
   omniauth-twitter
   rails (= 3.1.1)
