@@ -1,6 +1,6 @@
 module HomeHelper
 
-    def tweet_errors(tweet ='')
+    def tweet_errors(tweet = '')
       errors=[]
       poll_regex=/#q([^?]+?)\?\s*((?:[^,]+(?:,|$))+)/
       

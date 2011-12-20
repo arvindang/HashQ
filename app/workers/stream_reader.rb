@@ -18,6 +18,7 @@ class StreamReader
       p "GOT MESSAGE"
 
         twt_data= tweet_hash(status)
+        twt_data[:import_uid] = status.user.id
         p twt_data
         
         Resque.enqueue(StreamWorker, twt_data)

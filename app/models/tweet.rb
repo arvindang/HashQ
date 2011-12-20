@@ -7,4 +7,5 @@ class Tweet < ActiveRecord::Base
   serialize :user
   serialize :activities
   
+  validates_uniqueness_of :twitter_tweet_id
 end

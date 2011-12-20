@@ -2,7 +2,7 @@ class HomeController < ApplicationController
  include HomeHelper
  
   def index
-    @sent_tweet=session[:sent_tweet] || ''
+    @sent_tweet=session[:sent_tweet] 
     session[:sent_tweet]=nil
     if user_signed_in? 
       if session['q_tweet']
@@ -17,13 +17,13 @@ class HomeController < ApplicationController
   end
 
   def create
-    twt=params['q'] || ''
+    twt=params['q'] 
     
     @errors=tweet_errors(twt)
     
       
-      unless @errors.nil?
-        render :action => "index" 
+      if @errors.length>0
+        render :action => "index"
       else
         session['q_tweet']=params['q']
     

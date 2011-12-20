@@ -1,10 +1,12 @@
 class Oauth < ActiveRecord::Base
 
+  include Mymodule
+
   belongs_to              :user
 
   has_many :tweets, :class_name => 'Tweet', :primary_key => 'uid',  :foreign_key => 'uid'
 
-
+  
   def self.find_or_create_twitter(access_token)
     
     data = access_token
@@ -15,6 +17,7 @@ class Oauth < ActiveRecord::Base
     else 
       if data.uid
         oauth = Oauth.create(oauth_hash(data))
+        oauth.primer
       end
     end
   end
@@ -45,6 +48,23 @@ class Oauth < ActiveRecord::Base
       config.oauth_token_secret = self.oauth_secret
     end
   end
+  
+  
+  def primer
+   p "FIRST TWEET PRIMER"
+    self.sign_in
+    Twitter.new
+    twts=Twitter.home_timeline(:count=>1, :page=>1)
+    
+    twts.each do |status|
+      p "inside of each do UID:"
+      p uid
+      twt_data= twitter_hash(status)
+      twt_data[:import_uid] = uid
+      Resque.enqueue(StreamWorker, twt_data)
+     end
+  end
+  
   
   def self.oauth_hash(omniauth)
       p "INSIDE oauth_hash"

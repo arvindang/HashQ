@@ -32,15 +32,21 @@ extend Mymodule
       oauth.sign_in
       Twitter.new
       twts=[]
-  
-      maxtwt=oauth.tweets.max{ |a,b| a.created_at <=> b.created_at }
-  
-  
-      for i in 1..2 do
+      
+      #maxtwt=oauth.tweets.max{ |a,b| a.created_at <=> b.created_at }
+      maxtwt=oauth.tweets.order("created_at desc").where(:import_uid => uid).first
+      p "MAX TWEET"
+      
+      for i in 1..20 do
     
         if maxtwt
-          twt_data=Twitter.home_timeline(:count=>200, :page=>i, :since_id=>maxtwt.id_str )
+          p maxtwt.Twitter_tweet_id
+          "get home_timelines with max id_str"
+          p "page:"
+          P i
+          twt_data=Twitter.home_timeline(:count=>200, :page=>i, :since_id=>maxtwt.Twitter_tweet_id )
         else
+          "get home_timeline no max"
           twt_data=Twitter.home_timeline(:count=>200, :page=>i)
         end
         break if twt_data == []
@@ -50,7 +56,11 @@ extend Mymodule
       twts.sort!{ |a,b| a.created_at <=> b.created_at }
   
       twts.each do |status|
+          p "inside of each do UID:"
+          p uid
           twt_data= twitter_hash(status)
+          twt_data[:import_uid] = uid
+          p twt_data
           Resque.enqueue(StreamWorker, twt_data)
       end
   

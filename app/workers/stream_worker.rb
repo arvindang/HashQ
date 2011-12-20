@@ -96,7 +96,8 @@ class StreamWorker
     new_tweet=Twitter.new
     new_tweet.update_with_media("Results:",File.new("tmp/charts/#{tweet.id}.png"), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
     p "sent tweet with image"
-    
+    File.delete("tmp/charts/#{tweet.id}.png")
+    "deleted image from server"
   end
 
   def self.category_match(tweet,mypoll)
