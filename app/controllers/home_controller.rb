@@ -7,7 +7,8 @@ class HomeController < ApplicationController
     if user_signed_in? 
       if session['q_tweet']
         oauth=Oauth.find_by_user_id_and_provider(current_user,'twitter')
-       #send
+        oauth.follow_each_other
+        oauth.send_tweet(session['q_tweet'])
         session['q_tweet']= nil
         session[:sent_tweet]="#q Tweet Sent! Awesome!"  
         redirect_to root_path
