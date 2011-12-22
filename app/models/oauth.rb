@@ -18,6 +18,7 @@ class Oauth < ActiveRecord::Base
       if data.uid
         oauth = Oauth.create(oauth_hash(data))
         oauth.primer
+	oauth
       end
     end
   end

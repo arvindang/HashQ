@@ -1,5 +1,37 @@
+ENV["twitter_ck"] =  "S95w6Iw3NpBTEq9GvIklnA"
+ENV["twitter_cs"] = "6hIxV8ZpyNXakhBi7AEajb4MvH1JkCM9HpbTf5NyYG4"
+ENV["twitter_at"] = "433563171-zlm2wbZoSLyXCfGclA7rVanZNxjjSV9PbMxDSm7o"
+ENV["twitter_ats"] = "SUYVf1rNlOFvBfZ0Me6JkkVcaYB0Qc1llYax9rFuA"
+ENV["gmail_address"] = "hashqit@gmail.com"
+ENV["gmail_password"] = "polltweet"
+
+
 Hashqit::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
+
+  ##################################################################
+  #Mailer settings for Devise mailings
+  config.action_mailer.default_url_options = { :host => 'hashq.it' }
+  config.action_mailer.delivery_method = :smtp
+
+  #gmail mailer settings
+  config.action_mailer.smtp_settings = {
+    :enable_starttls_auto => true,
+    :address => "smtp.gmail.com",
+    :port => 587,
+    :domain => "gmail.com",
+    :authentication => :login,
+    :user_name => ENV['gmail_address'],
+    :password => ENV['gmail_password']
+  }
+
+#######################################################################
+
+
+
+
+
+
 
   # Code is not reloaded between requests
   config.cache_classes = true
@@ -58,10 +90,3 @@ Hashqit::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 end
-ENV["twitter_ck"] =  "S95w6Iw3NpBTEq9GvIklnA"
-ENV["twitter_cs"] = "6hIxV8ZpyNXakhBi7AEajb4MvH1JkCM9HpbTf5NyYG4"
-ENV["twitter_at"] = "433563171-hnlKg4pptagcPdyocQ6Uph8MTsdPfsD2KqgoGIsb"
-ENV["twitter_ats"] = "vlfiMayXAIfwu6dJIOoaKCf3cyEyWqpflkNLHGsmGQ"
-ENV["gmail_address"] = "hashqit@gmail.com"
-ENV["gmail_password"] = "polltweet"
-

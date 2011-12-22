@@ -9,7 +9,7 @@ class StreamWorker
     @tweet=Tweet.create(twt_data)
    
     if @tweet.in_reply_to_user_id.blank?
-      p "In reply to:"
+    #  p "In reply to:"
       p @tweet.in_reply_to_user_id
       p "Creating Poll"
       poll_create(@tweet)
@@ -34,24 +34,24 @@ class StreamWorker
     return if poll_regex.match(poll_text).nil?
 
     # This gets the question
-    question=poll_regex.match(poll_text)[1]
+    question=poll_regex.match(poll_text)[1]||''
 
     #creates an array of answers
-    answer_array=poll_regex.match(poll_text)[2].split(";")
+    answer_array=poll_regex.match(poll_text)[2].split(";")||''
 
     #Convert my array to a hash with poll result starting at 0
     answers_hash = {}
     answer_array.each { |i| answers_hash[i] = 0 }
     
-    p "before create:"
-    p tweet.id
-    p tweet.twitter_tweet_id
-    p question
-    p answers_hash
-    p "xxxxxxxxxxxxxxxxxxxxx"
+    #p "before create:"
+    #p tweet.id
+    #p tweet.twitter_tweet_id
+    #p question
+    #p answers_hash
+    #p "xxxxxxxxxxxxxxxxxxxxx"
     new_poll = Poll.create(:tweet_id=>tweet.id, :twitter_tweet_id => tweet.twitter_tweet_id ,:question=>question, :answers=>answers_hash)
     p "created poll:"
-    p new_poll
+    #p new_poll
     
   end
 
@@ -135,3 +135,4 @@ class StreamWorker
     end
   end
 end
+
