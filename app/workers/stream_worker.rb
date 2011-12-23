@@ -113,7 +113,7 @@ end
     chart.file
     log "Saved chart"
     new_tweet=Twitter.new
-    new_tweet.update_with_media("Results:",File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
+    new_tweet.update_with_media(title,File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
     log "sent tweet with image"
     File.delete(file_path)
     log "deleted image from server"
@@ -122,12 +122,14 @@ end
   def self.category_match(tweet,mypoll)
     
     include Amatch
-    
+    twt_text=tweet.text.gsub(/^@\w{1,15}/i, '').downcase 
+    twt_answers=mypoll.answers.keys.map {|i| i.downcase}
     #Define the match type (the method to search using the amatch gem)
-    reply=LongestSubstring.new(tweet.text)
+    reply=LongestSubstring.new(twt_text)
+
 
     #Create an array with the highest values being the best match
-    score_longsub=reply.match(mypoll.answers.keys)
+    score_longsub=reply.match(twt_answers)
 
     #Create an array of the positions of the highest values
     score_positions=score_longsub.index_positions(score_longsub.max)
@@ -138,10 +140,10 @@ end
     if score_positions.length>1
 
       #Define the match type (the method to search using the amatch gem)
-      reply=JaroWinkler.new(tweet.text)
+      reply=JaroWinkler.new(twt_text)
 
       #create an array of only the top score categories
-      answers_short=score_positions.collect {|i| mypoll.answers.keys[i]}
+      answers_short=score_positions.collect {|i| twt_answers[i]}
 
       #Create an array with the highest values being the best match
       score_jarow=reply.match(answers_short)
