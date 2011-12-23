@@ -6,8 +6,13 @@ class TwitterRest
 @queue = "rest_data"
 
 extend Mymodule
-  
-  def self.sync
+ 
+ def self.log(message)
+ 	Rails.logger.info "[#{Time.now}] [Process #{$$}] [TwitterRest] #{message}"
+  	Rails.logger.flush
+ end
+
+ def self.sync
     
     oauth=Oauth.all
     oauth.each do |user|
@@ -58,17 +63,24 @@ extend Mymodule
       end
       
       if twts !=[]
+
+	log "length: #{twts.length}"
 	if maxtwt	  
 		twts.find_all{|i| i.id>maxtwt.twitter_tweet_id}
+	        log "min: #{twts.min{|i| i.id}.id}"
+                log "max: #{maxtwt.twitter_tweet_id}"
 	end
       	twts.sort!{ |a,b| a.created_at <=> b.created_at }
-  
+        log "post_filter: #{twts.length}"
      	 twts.each do |status|
         	 # p "inside of each do UID:"
-         	# p uid
+         	log "Status id: #{status.id}"
           	twt_data= twitter_hash(status)
           	twt_data[:import_uid] = uid
-         	# p twt_data
+         	log "statusid: #{status.id}"
+		log "twittertweetid: #{twt_data['twitter_tweet_id']}"
+
+		# p twt_data
           	Resque.enqueue(StreamWorker, twt_data)
 	 end
       end

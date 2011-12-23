@@ -1,4 +1,6 @@
 class StreamWorker
+
+
   @queue = "stream_data"
 
   #include Amatch
@@ -12,6 +14,7 @@ end
   def self.perform(twt_data)
     log "Create record of tweet"
     @tweet=Tweet.create(twt_data)
+    log @tweet.text
  
     if @tweet.in_reply_to_user_id.blank?
     log "In reply to:"
@@ -37,7 +40,7 @@ end
 
     poll_regex=/#q([^?]+?)\?\s*((?:[^,]+(?:,|$))+)/i
     log "poll_regex"
-    log pollregex
+    log poll_regex
 
     return if poll_regex.match(poll_text).nil?
     
@@ -98,21 +101,21 @@ end
     
     #Create lengend with key name from hash
     legend=orig_poll.answers.keys
-    
+    file_path="/tmp/#{tweet.id}.png"
     #Create a pie chart and sets a file name to save it to tmp directory
     chart = Gchart.new( :type => 'pie',
                         :title => title,
                         :data => data, 
                         :legend => legend,
-                        :filename => "tmp/charts/#{tweet.id}.png")
+                        :filename => file_path)
 
     # Record file in filesystem (In other words Save the file)
     chart.file
     log "Saved chart"
     new_tweet=Twitter.new
-    new_tweet.update_with_media("Results:",File.new("tmp/charts/#{tweet.id}.png"), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
+    new_tweet.update_with_media("Results:",File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
     log "sent tweet with image"
-    File.delete("tmp/charts/#{tweet.id}.png")
+    File.delete(file_path)
     log "deleted image from server"
   end
 
@@ -152,3 +155,4 @@ end
       mypoll.answers.keys[score_positions.first]
     end
   end
+end

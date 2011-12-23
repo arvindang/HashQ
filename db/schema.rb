@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(:version => 20111219215257) do
 
   create_table "polls", :force => true do |t|
     t.integer  "tweet_id"
-    t.integer  "twitter_tweet_id"
+    t.integer  "twitter_tweet_id", :limit => 8
     t.string   "question"
     t.text     "answers"
     t.datetime "created_at"
@@ -54,15 +54,15 @@ ActiveRecord::Schema.define(:version => 20111219215257) do
     t.string   "in_reply_to_screen_name"
     t.datetime "created_at"
     t.string   "in_reply_to_status_id_str"
-    t.integer  "in_reply_to_status_id"
+    t.integer  "in_reply_to_status_id",     :limit => 8
     t.string   "source"
     t.string   "retweeted"
     t.string   "in_reply_to_user_id_str"
     t.string   "truncated"
     t.string   "id_str"
-    t.integer  "in_reply_to_user_id"
+    t.integer  "in_reply_to_user_id",       :limit => 8
     t.string   "contributors"
-    t.integer  "twitter_tweet_id"
+    t.integer  "twitter_tweet_id",          :limit => 8
     t.integer  "uid"
     t.text     "user"
     t.string   "category"
