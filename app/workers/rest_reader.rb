@@ -29,9 +29,15 @@ end
           log "includes #r:"
           unless status.in_reply_to_user_id.blank?
             log "it is a reply:"
-            log status.user.id
-            if Oauth.find_by_uid(status.user.id)
-                Resque.enqueue(TwitterRest,status.user.id)
+            log status.user['screen_name']
+             
+
+            if Oauth.find_by_uid(status.user.id) && status.in_reply_to_user_id==status.user.id
+             	log "sent to resque"
+		   Resque.enqueue(TwitterRest,status.user.id)
+	     else
+		log "could not find Oauth or reply and poster not the same- END"
+	 	log "#{status.in_reply_to_user_id}:  #{status.user.id}"
             end
           end
         end

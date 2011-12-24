@@ -81,7 +81,8 @@ extend Mymodule
 		log "twittertweetid: #{twt_data['twitter_tweet_id']}"
 
 		# p twt_data
-          	Resque.enqueue(StreamWorker, twt_data)
+          	log "sent to Resque stream worker"
+		Resque.enqueue(StreamWorker, twt_data)
 	 end
       end
   

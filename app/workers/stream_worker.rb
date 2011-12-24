@@ -88,13 +88,19 @@ end
   end
 
   def self.poll_results(tweet)
-    orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+   log "START POLL RESULTS:"
+     orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+    
+    reply_name=Tweet.find_by_twitter_tweet_id(tweet.in_reply_to_status_id).user['screen_name'] || ""
     log "orig_poll"
     log orig_poll
     return if orig_poll.nil?
-
+    log "found poll"
     # Create title for graph
     title="Results: #{orig_poll.question}"
+    str=''
+    title_a=title.scan(/.{30}\S*/)
+    title_chart = title_a.each {|i| str+=i+"|"}
     log title
     #Create data for graph
     data=orig_poll.answers.values
@@ -104,7 +110,7 @@ end
     file_path="/tmp/#{tweet.id}.png"
     #Create a pie chart and sets a file name to save it to tmp directory
     chart = Gchart.new( :type => 'pie',
-                        :title => title,
+                        :title => title_chart,
                         :data => data, 
                         :legend => legend,
                         :filename => file_path)
@@ -113,7 +119,7 @@ end
     chart.file
     log "Saved chart"
     new_tweet=Twitter.new
-    new_tweet.update_with_media(title,File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
+    new_tweet.update_with_media("@#{reply_name} Results:",File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
     log "sent tweet with image"
     File.delete(file_path)
     log "deleted image from server"
@@ -127,10 +133,14 @@ end
     #Define the match type (the method to search using the amatch gem)
     reply=LongestSubstring.new(twt_text)
 
+    log twt_text
+    log twt_answers
 
     #Create an array with the highest values being the best match
     score_longsub=reply.match(twt_answers)
-
+    log "Highest match number: #{score_longsub.max}"
+    log score_longsub
+    
     #Create an array of the positions of the highest values
     score_positions=score_longsub.index_positions(score_longsub.max)
 
