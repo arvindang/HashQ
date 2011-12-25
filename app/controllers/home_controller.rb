@@ -17,9 +17,9 @@ class HomeController < ApplicationController
   end
 
   def create
-    twt=params['q'] 
+   @twt=params['q'] 
     
-    @errors=tweet_errors(twt)
+    @errors=tweet_errors(@twt)
     
       
       if @errors.length>0

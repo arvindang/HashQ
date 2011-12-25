@@ -18,7 +18,7 @@
 		<span id="validquestion"></span><span id="charlimitinfo" >140</span>
 		
 		<%= form_tag(home_index_path, :method => 'post') do %>
-		<%= text_area_tag "q", nil , :placeholder => "#q What's your favorite color? red; purple; green" %>
+		<%= text_area_tag "q",@twt , :placeholder => "#q What's your favorite color? red; purple; green" %>
 			<!-- <textarea wrap='on' id="q" placeholder="#q What's your favorite color? red; purple; green"></textarea>
 					<input class="btn" type="submit" value="Tweet"> -->
 			<%= submit_tag "Tweet", :class=>'btn' %>
