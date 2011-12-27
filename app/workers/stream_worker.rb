@@ -99,30 +99,44 @@ end
     # Create title for graph
     title="Results: #{orig_poll.question}"
     str=''
-    title_a=title.scan(/.{30}\S*/)
-    title_chart = title_a.each {|i| str+=i+"|"}
+   # title_a=title.scan(/.{30}\S*/)
+   # title_chart = title_a.each {|i| str+=i+"|"}
+     title_chart= title.length<35 ? title : "Results"
+
     log title
     #Create data for graph
-    data=orig_poll.answers.values
+    data=orig_poll.answers.values 
+    data_sum=data.inject(0){|sum,item| sum + item}
     
-    #Create lengend with key name from hash
+    data_percent=data.map{|i| (i.to_f/data_sum*100).round(1)}
+    #Create legend with key name from hash
     legend=orig_poll.answers.keys
+
+    legend_percent=legend.zip(data_percent).map {|x,y|  x+" ("+y.to_s+"%)"}
     file_path="/tmp/#{tweet.id}.png"
+    twt_title="@#{reply_name} #{title}"
+    twt_title=twt_title.gsub(/^(.{85}[\w.]*)(.*)/) {$2.empty? ? $1 : $1 + '...'}
+
+
     #Create a pie chart and sets a file name to save it to tmp directory
     chart = Gchart.new( :type => 'pie',
                         :title => title_chart,
                         :data => data, 
-                        :legend => legend,
+                        :legend =>legend_percent,
                         :filename => file_path)
 
     # Record file in filesystem (In other words Save the file)
     chart.file
     log "Saved chart"
     new_tweet=Twitter.new
-    new_tweet.update_with_media("@#{reply_name} Results:",File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
-    log "sent tweet with image"
-    File.delete(file_path)
-    log "deleted image from server"
+    if data_sum<2
+    	new_tweet.update("@#{reply_name} Sorry, but you need at least 2 valid responses to create a #Hashqit chart.", :in_reply_to_status_id =>tweet.in_reply_to_status_id)
+    else
+    	new_tweet.update_with_media(twt_title,File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
+    	log "sent tweet with image"
+    	File.delete(file_path)
+    	log "deleted image from server"
+    end
   end
 
   def self.category_match(tweet,mypoll)

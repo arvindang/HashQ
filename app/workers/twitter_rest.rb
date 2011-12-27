@@ -27,6 +27,7 @@ extend Mymodule
   def self.perform(uid)
       p "Sent to be processed"
       p uid
+      sleep(10)
       get_tweets(uid)
   end
     
@@ -40,9 +41,11 @@ extend Mymodule
       twt_data=[]
  
       #maxtwt=oauth.tweets.max{ |a,b| a.created_at <=> b.created_at }
-      maxtwt=oauth.tweets.order("created_at desc").where(:import_uid => uid).first
+      maxtwt=Tweet.order("created_at desc").where(:import_uid => uid).first
       #p "MAX TWEET"
       
+#GET USER_TIMELINE
+
       for i in 1..16 do
     
         if maxtwt
@@ -58,9 +61,28 @@ extend Mymodule
 	   twts+=twt_data
 	   break
         end
-	
         break if twt_data == []
       end
+
+# GET MENTIONS
+      for i in 1..4 do
+        if maxtwt
+        #p maxtwt.twitter_tweet_id
+        #get mentions  (since_id in API does not work)
+          twt_data=Twitter.mentions(:count=>200, :page => i,:since_id => maxtwt.twitter_tweet_id)||[]
+          twts+=twt_data
+          break if twt_data==[]|| twt_data.min{|i| i.id}.id <maxtwt.twitter_tweet_id
+
+        else
+          #get mentions  no max
+           twt_data=Twitter.mentions(:count=>50, :page=>1)
+           twts+=twt_data
+           break
+        end
+
+        break if twt_data == []
+      end
+
       
       if twts !=[]
 
@@ -70,7 +92,12 @@ extend Mymodule
 	        log "min: #{twts.min{|i| i.id}.id}"
                 log "max: #{maxtwt.twitter_tweet_id}"
 	end
-      	twts.sort!{ |a,b| a.created_at <=> b.created_at }
+
+	
+	#remove duplictes
+	twts=twts.group_by(&:id).values.map(&:first)
+      	#sort them
+	twts.sort!{ |a,b| a.created_at <=> b.created_at }
         log "post_filter: #{twts.length}"
      	 twts.each do |status|
         	 # p "inside of each do UID:"
