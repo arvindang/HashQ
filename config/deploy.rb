@@ -15,6 +15,12 @@ set :use_sudo, true
 set :deploy_via, :remote_cache
 set :group, :hashqit
 
+set :bundle_cmd, "rvm 1.9.2 exec bundle"
+
+set :default_environment, {
+  :PATH => '/usr/local/bin:/usr/local/rvm/bin:/usr/bin:/bin'
+}
+
 task :production do
   role :app, "173.255.205.244"
 end
