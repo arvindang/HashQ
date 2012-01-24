@@ -25,6 +25,11 @@ task :production do
   role :app, "173.255.205.244"
 end
 
+before "deploy:update_code" do
+  sudo "sh -c 'if [ -d #{shared_path}/cached-copy ]; then chown -R root:root #{shared_path}/cached-copy; fi'"
+  sudo "sh -c 'if [ -d #{shared_path}/cached-copy ]; then chmod -R ga+rw #{shared_path}/cached-copy; fi'"
+end
+
 # If you are using Passenger mod_rails uncomment this:
 # namespace :deploy do
 #   task :start do ; end
