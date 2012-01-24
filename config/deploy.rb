@@ -22,13 +22,17 @@ set :default_environment, {
 }
 
 task :production do
-  role :app, "173.255.205.244"
+  ip = "173.255.205.244"
+  role :app, ip
+  role :db, ip, :primary => true
 end
 
 before "deploy:update_code" do
   sudo "sh -c 'if [ -d #{shared_path}/cached-copy ]; then chown -R root:root #{shared_path}/cached-copy; fi'"
   sudo "sh -c 'if [ -d #{shared_path}/cached-copy ]; then chmod -R ga+rw #{shared_path}/cached-copy; fi'"
 end
+
+after "deploy:update_code", "deploy:migrate"
 
 # If you are using Passenger mod_rails uncomment this:
 # namespace :deploy do
