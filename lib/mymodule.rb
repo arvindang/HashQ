@@ -60,16 +60,8 @@ module Mymodule
                  if status.has_key?(:activities) 
                    hashit[:activies] = status.activities
                  end
-
-
-                 
                  hashit
   end
-  
-
-  
-  
-  
   
   
 end

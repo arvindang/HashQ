@@ -42,7 +42,7 @@ extend Mymodule
  
       #maxtwt=oauth.tweets.max{ |a,b| a.created_at <=> b.created_at }
       maxtwt=Tweet.order("created_at desc").where(:import_uid => uid).first
-      #p "MAX TWEET"
+      
       
 #GET USER_TIMELINE
 
@@ -89,28 +89,27 @@ extend Mymodule
 	log "length: #{twts.length}"
 	if maxtwt	  
 		twts.find_all{|i| i.id>maxtwt.twitter_tweet_id}
-	        log "min: #{twts.min{|i| i.id}.id}"
-                log "max: #{maxtwt.twitter_tweet_id}"
+	        
+	        log "Twt_range #{twts.min{|i| i.id}.id} - #{twts.min{|i| i.id}.id}"
+          log "Max_db_id: #{maxtwt.twitter_tweet_id}"
 	end
 
 	
-	#remove duplictes
-	twts=twts.group_by(&:id).values.map(&:first)
-      	#sort them
-	twts.sort!{ |a,b| a.created_at <=> b.created_at }
-        log "post_filter: #{twts.length}"
+	     #remove duplictes
+	     twts=twts.group_by(&:id).values.map(&:first)
+       #sort them
+	     twts.sort!{ |b,a| a.created_at <=> b.created_at }
+       log "post_filter: #{twts.length}"
      	 twts.each do |status|
         	 # p "inside of each do UID:"
-         	log "Status id: #{status.id}"
+         	  log "Status id: #{status.id}"
           	twt_data= twitter_hash(status)
           	twt_data[:import_uid] = uid
-         	log "statusid: #{status.id}"
-		log "twittertweetid: #{twt_data['twitter_tweet_id']}"
-
-		# p twt_data
+         	  log "statusid: #{status.id}"
+		        log "twittertweetid: #{twt_data['twitter_tweet_id']}"
           	log "sent to Resque stream worker"
-		Resque.enqueue(StreamWorker, twt_data)
-	 end
+		        Resque.enqueue(StreamWorker, twt_data)
+	      end
       end
   
   end

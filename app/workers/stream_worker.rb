@@ -4,7 +4,6 @@ class StreamWorker
   @queue = "stream_data"
 
   #include Amatch
-  extend Amatch
  
 def self.log(message)
   Rails.logger.info "[#{Time.now}] [Process #{$$}] [Stream Worker] #{message}"
@@ -16,10 +15,10 @@ end
     @tweet=Tweet.create(twt_data)
     log @tweet.text
  
-    if @tweet.in_reply_to_user_id.blank?
-    log "In reply to:"
-    log @tweet.in_reply_to_user_id
-    log "Creating Poll"
+    if @tweet.in_reply_to_user_id.blank? || @tweet.in_reply_to_status_id.nil?
+      log "In reply to:"
+      log @tweet.in_reply_to_user_id
+      log "Creating Poll"
       poll_create(@tweet)
     else
     
@@ -29,7 +28,7 @@ end
       else  
        	log "Processing Vote"
       	log @tweet.text
-  	poll_vote(@tweet)
+  	    poll_vote(@tweet)
       end
     end
   end
@@ -67,12 +66,13 @@ end
   end
 
   def self.poll_vote(tweet)
-    orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+    #orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+    orig_poll=tweet.orig_poll
     log "orig_poll"
     log orig_poll
     log "in reply to status id"
     log tweet.in_reply_to_status_id
-    return if orig_poll.nil?
+    return if orig_poll.nil? || tweet.uid==
 
     if orig_poll
       category=category_match(tweet,orig_poll)  
@@ -139,46 +139,4 @@ end
     end
   end
 
-  def self.category_match(tweet,mypoll)
-    
-    include Amatch
-    twt_text=tweet.text.gsub(/^@\w{1,15}/i, '').downcase 
-    twt_answers=mypoll.answers.keys.map {|i| i.downcase}
-    #Define the match type (the method to search using the amatch gem)
-    reply=LongestSubstring.new(twt_text)
-
-    log twt_text
-    log twt_answers
-
-    #Create an array with the highest values being the best match
-    score_longsub=reply.match(twt_answers)
-    log "Highest match number: #{score_longsub.max}"
-    log score_longsub
-    
-    #Create an array of the positions of the highest values
-    score_positions=score_longsub.index_positions(score_longsub.max)
-
-    score_positions=score_longsub.index_positions(score_longsub.max)
-
-    #check if best score, if not use another match method to rescore.
-    if score_positions.length>1
-
-      #Define the match type (the method to search using the amatch gem)
-      reply=JaroWinkler.new(twt_text)
-
-      #create an array of only the top score categories
-      answers_short=score_positions.collect {|i| twt_answers[i]}
-
-      #Create an array with the highest values being the best match
-      score_jarow=reply.match(answers_short)
-
-      #Create an array of the positions of the highest values
-      score_positions=score_jarow.index_positions(score_jarow.max)
-
-      answers_short[score_positions.first] 
-
-    else
-      mypoll.answers.keys[score_positions.first]
-    end
-  end
 end

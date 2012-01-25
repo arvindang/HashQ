@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111219215257) do
+ActiveRecord::Schema.define(:version => 20111228205222) do
 
   create_table "oauths", :force => true do |t|
     t.string   "provider"
@@ -68,6 +68,8 @@ ActiveRecord::Schema.define(:version => 20111219215257) do
     t.string   "category"
     t.datetime "updated_at"
     t.integer  "import_uid"
+    t.integer  "poll_id"
+    t.string   "twt_type"
   end
 
   create_table "users", :force => true do |t|
