@@ -11,23 +11,21 @@ def self.log(message)
 end
  
   def self.perform(twt_data)
-    log "Create record of tweet"
+    
     @tweet=Tweet.create(twt_data)
-    log @tweet.text
+    log "1) Created record of tweet: #{@tweet.text}"
  
     if @tweet.in_reply_to_user_id.blank? || @tweet.in_reply_to_status_id.nil?
-      log "In reply to:"
-      log @tweet.in_reply_to_user_id
-      log "Creating Poll"
+      log "2) in_reply_to_user/tweeter id is blank, creating Poll process"
       poll_create(@tweet)
     else
-    
+  
+      log "In reply to: #{@tweet.in_reply_to_user_id}"
       if @tweet.text.downcase.include? "#r"
-        log "Getting Results"
+        log "3) includes #r, processing results"
         poll_results(@tweet)
       else  
-       	log "Processing Vote"
-      	log @tweet.text
+       	log "3) does not include #r, processing Vote: #{@tweet.text}"
   	    poll_vote(@tweet)
       end
     end
@@ -36,10 +34,8 @@ end
 ###################################################################
   def self.poll_create(tweet)
     poll_text=tweet.text
-
     poll_regex=/#q([^?]+?)\?\s*((?:[^,]+(?:,|$))+)/i
-    log "poll_regex"
-    log poll_regex
+    log "poll_regex: #{poll_regex}"
 
     return if poll_regex.match(poll_text).nil?
     
@@ -53,31 +49,22 @@ end
     answers_hash = {}
     answer_array.each { |i| answers_hash[i] = 0 }
     
-    #p "before create:"
-    #p tweet.id
-    #p tweet.twitter_tweet_id
-    #p question
-    #p answers_hash
-    #p "xxxxxxxxxxxxxxxxxxxxx"
+    #Create poll
     new_poll = Poll.create(:tweet_id=>tweet.id, :twitter_tweet_id => tweet.twitter_tweet_id ,:question=>question, :answers=>answers_hash)
-    log "created poll:"
-    log new_poll
+    log "created poll: #{new_poll}"
     
   end
 
   def self.poll_vote(tweet)
     #orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
     orig_poll=tweet.orig_poll
-    log "orig_poll"
-    log orig_poll
-    log "in reply to status id"
-    log tweet.in_reply_to_status_id
-    return if orig_poll.nil? || tweet.uid==
-
+    return if orig_poll.nil?
+    
+    log "pollvote, orig_poll: #{orig_poll.twitter_tweet_id}, in reply to status id: #{tweet.in_reply_to_status_id}"
+    
     if orig_poll
-      category=category_match(tweet,orig_poll)  
-      log "CLASSIFIED AS:"
-      log category
+      category=tweet.category_match  
+      log "CLASSIFIED AS: #{category}"
       tweet.category=category
       tweet.save
       orig_poll.answers[category]+=1
@@ -90,12 +77,12 @@ end
   def self.poll_results(tweet)
    log "START POLL RESULTS:"
      orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+     return if orig_poll.nil?
+     reply_name=Tweet.find_by_twitter_tweet_id(tweet.in_reply_to_status_id).user['screen_name'] || ""
+     log "Polling results: found orig_poll: #{orig_poll}"
+     
     
-    reply_name=Tweet.find_by_twitter_tweet_id(tweet.in_reply_to_status_id).user['screen_name'] || ""
-    log "orig_poll"
-    log orig_poll
-    return if orig_poll.nil?
-    log "found poll"
+    
     # Create title for graph
     title="Results: #{orig_poll.question}"
     str=''
@@ -127,15 +114,15 @@ end
 
     # Record file in filesystem (In other words Save the file)
     chart.file
-    log "Saved chart"
+    log "Poll Results: Saved chart"
     new_tweet=Twitter.new
     if data_sum<2
     	new_tweet.update("@#{reply_name} Sorry, but you need at least 2 valid responses to create a #Hashqit chart.", :in_reply_to_status_id =>tweet.in_reply_to_status_id)
     else
     	new_tweet.update_with_media(twt_title,File.new(file_path), :in_reply_to_status_id =>tweet.in_reply_to_status_id)
-    	log "sent tweet with image"
+    	log "Poll Results: sent tweet with image"
     	File.delete(file_path)
-    	log "deleted image from server"
+    	log "Poll Results: deleted image from server"
     end
   end
 

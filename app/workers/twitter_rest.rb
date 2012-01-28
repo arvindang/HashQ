@@ -50,7 +50,7 @@ extend Mymodule
     
         if maxtwt
       	#p maxtwt.twitter_tweet_id
-	#get user_timeline (since_id in API does not work)
+	      #get user_timeline (since_id in API does not work)
           twt_data=Twitter.user_timeline(:count=>200, :page => i,:since_id => maxtwt.twitter_tweet_id)||[]
           twts+=twt_data
 	  break if twt_data==[]|| twt_data.min{|i| i.id}.id <maxtwt.twitter_tweet_id
@@ -105,9 +105,7 @@ extend Mymodule
          	  log "Status id: #{status.id}"
           	twt_data= twitter_hash(status)
           	twt_data[:import_uid] = uid
-         	  log "statusid: #{status.id}"
-		        log "twittertweetid: #{twt_data['twitter_tweet_id']}"
-          	log "sent to Resque stream worker"
+		        log "twittertweetid: #{twt_data['twitter_tweet_id']}, sent to Resque stream worker"
 		        Resque.enqueue(StreamWorker, twt_data)
 	      end
       end
