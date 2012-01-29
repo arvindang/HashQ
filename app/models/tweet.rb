@@ -1,5 +1,7 @@
 class Tweet < ActiveRecord::Base
 
+  #after_create :save_poll_id
+  
   #Creates a one to many relationship, can use "tweets.poll" to get poll orginal poll.
   
   has_one :poll
@@ -31,8 +33,14 @@ class Tweet < ActiveRecord::Base
    end
   
   def orig_poll
-    Poll.find_by_twitter_tweet_id(self.orig_tweet.twitter_tweet_id)
+    Poll.find_by_twitter_tweet_id((self.orig_tweet.twitter_tweet_id unless self.orig_tweet.nil?))
   end
+  
+  def save_poll_id
+    self.poll_id=self.orig_poll.id
+    self.save
+  end
+  
    # def orig_tweet
    #       Tweet.find_by_twitter_tweet_id(self.in_reply_to_status_id).try(:orig_tweet) || self
    #     end
@@ -57,13 +65,15 @@ class Tweet < ActiveRecord::Base
   end
   
   def current_vote
-    @prev_vote ||= Tweet.where(:uid => self.uid, :poll_id => self.orig_poll,:twt_type=>'vote').where("category IS NOT NULL OR category !=''").order('created_at DESC').first
+    Tweet.where(:uid => self.uid, :poll_id => self.orig_poll,:twt_type=>'vote').where("category IS NOT NULL OR category !=''").order('created_at DESC').first
     #"category IS NOT NULL OR category !=''"
   end
   
   def process_vote!
+      nil
+      return if self.orig_poll.nil?
       self.current_vote.unvote unless current_vote.nil?
-      self.vote
+      self.vote!
   end
 
   def process_twt_type

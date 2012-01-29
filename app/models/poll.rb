@@ -13,4 +13,5 @@ class Poll < ActiveRecord::Base
     self.answers[category]+=adjust_by
     self.save
   end
+    
 end

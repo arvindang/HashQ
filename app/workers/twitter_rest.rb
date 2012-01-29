@@ -98,7 +98,7 @@ extend Mymodule
 	     #remove duplictes
 	     twts=twts.group_by(&:id).values.map(&:first)
        #sort them
-	     twts.sort!{ |b,a| a.created_at <=> b.created_at }
+	     twts.sort!{ |a,b| a.created_at <=> b.created_at }
        log "post_filter: #{twts.length}"
      	 twts.each do |status|
         	 # p "inside of each do UID:"

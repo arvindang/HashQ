@@ -20,7 +20,7 @@ end
       poll_create(@tweet)
     else
   
-      log "In reply to: #{@tweet.in_reply_to_user_id}"
+      log "2) In reply to: #{@tweet.in_reply_to_user_id}"
       if @tweet.text.downcase.include? "#r"
         log "3) includes #r, processing results"
         poll_results(@tweet)
@@ -61,16 +61,8 @@ end
     return if orig_poll.nil?
     
     log "pollvote, orig_poll: #{orig_poll.twitter_tweet_id}, in reply to status id: #{tweet.in_reply_to_status_id}"
-    
-    if orig_poll
-      category=tweet.category_match  
-      log "CLASSIFIED AS: #{category}"
-      tweet.category=category
-      tweet.save
-      orig_poll.answers[category]+=1
-      orig_poll.save
-      log "saved category and added to tally"
-    end
+    tweet.process_vote!
+    log "saved category and added to tally"
  
   end
 
@@ -84,7 +76,8 @@ end
     
     
     # Create title for graph
-    title="Results: #{orig_poll.question}"
+    time_stamp = Time.new.strftime('%S')
+    title="Results (# #{time_stamp}): #{orig_poll.question}"
     str=''
    # title_a=title.scan(/.{30}\S*/)
    # title_chart = title_a.each {|i| str+=i+"|"}
