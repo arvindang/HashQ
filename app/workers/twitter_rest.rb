@@ -41,8 +41,8 @@ extend Mymodule
       twt_data=[]
  
       #maxtwt=oauth.tweets.max{ |a,b| a.created_at <=> b.created_at }
-      maxtwt=Tweet.order("created_at desc").where(:import_uid => uid).first
-      
+     
+     p maxtwt=Tweet.order("twitter_tweet_id desc").where(:import_uid => uid).first
       
 #GET USER_TIMELINE
 
@@ -86,13 +86,13 @@ extend Mymodule
       
       if twts !=[]
 
-	log "length: #{twts.length}"
-	if maxtwt	  
-		twts.find_all{|i| i.id>maxtwt.twitter_tweet_id}
+	      log "length: #{twts.length}"
+	      if maxtwt	  
+		      twts=twts.find_all{|i| i.id>maxtwt.twitter_tweet_id}
 	        
 	        log "Twt_range #{twts.min{|i| i.id}.id} - #{twts.min{|i| i.id}.id}"
           log "Max_db_id: #{maxtwt.twitter_tweet_id}"
-	end
+	      end
 
 	
 	     #remove duplictes

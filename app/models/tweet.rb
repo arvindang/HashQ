@@ -59,7 +59,8 @@ class Tweet < ActiveRecord::Base
   end
 
   def vote!
-    self.orig_poll.tally(self.category_match)
+    self.category=self.category_match
+    self.orig_poll.tally(self.category)
     self.twt_type='vote'
     self.save
   end
@@ -72,7 +73,7 @@ class Tweet < ActiveRecord::Base
   def process_vote!
       nil
       return if self.orig_poll.nil?
-      self.current_vote.unvote unless current_vote.nil?
+      self.current_vote.unvote! unless current_vote.nil?
       self.vote!
   end
 

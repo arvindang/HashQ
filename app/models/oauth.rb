@@ -37,10 +37,15 @@ class Oauth < ActiveRecord::Base
     end
  end
  
- def send_tweet(message)
+ def send_tweet(message,reply_to)
      self.sign_in
      Twitter.new
-     Twitter.update(message)
+     
+     if reply_to.nil?
+       Twitter.update(message)
+     else
+       Twitter.update(message,reply_to)
+     end
  end
  
   def sign_in 

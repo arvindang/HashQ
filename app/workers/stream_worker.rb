@@ -19,7 +19,7 @@ end
       log "2) in_reply_to_user/tweeter id is blank, creating Poll process"
       poll_create(@tweet)
     else
-  
+      
       log "2) In reply to: #{@tweet.in_reply_to_user_id}"
       if @tweet.text.downcase.include? "#r"
         log "3) includes #r, processing results"
@@ -59,18 +59,46 @@ end
     #orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
     orig_poll=tweet.orig_poll
     return if orig_poll.nil?
+    tweet.save_poll_id
+    
+    return if tweet.orig_tweet.uid==tweet.uid
+    
+    p tweet.orig_tweet.uid
+    p tweet.uid
+   # return if tweet.orig_tweet.uid = tweet.uid
+    
+   
     
     log "pollvote, orig_poll: #{orig_poll.twitter_tweet_id}, in reply to status id: #{tweet.in_reply_to_status_id}"
     tweet.process_vote!
     log "saved category and added to tally"
- 
+    
+    p reply_name=tweet.user['screen_name'] || ""
+    
+    p fix_answers=orig_poll.answers.keys
+    p fix_answers.delete(tweet.category)
+    
+    p fix_answers
+    list='['
+    unless fix_answers.nil?
+      fix_answers.each {|i| list +="#{i};"} 
+      list=list.chomp(";")
+      msg="Did you mean to vote [#{tweet.category}]? If not choose #{list}]."
+      p oauth=Oauth.find_by_uid(tweet.orig_tweet.uid)
+      oauth.send_tweet("@#{reply_name} #{msg}", :in_reply_to_status_id =>tweet.twitter_tweet_id)
+  	  p "@#{reply_name} #{msg}"
+  	end
+  	
   end
 
   def self.poll_results(tweet)
    log "START POLL RESULTS:"
-     orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+     #orig_poll=Poll.find_by_twitter_tweet_id(tweet.in_reply_to_status_id)
+     orig_poll=tweet.orig_poll
      return if orig_poll.nil?
-     reply_name=Tweet.find_by_twitter_tweet_id(tweet.in_reply_to_status_id).user['screen_name'] || ""
+     tweet.save_poll_id
+     
+     reply_name=Tweet.find_by_twitter_tweet_id(tweet.orig_tweet.twitter_tweet_id).user['screen_name'] || ""
      log "Polling results: found orig_poll: #{orig_poll}"
      
     
