@@ -28,6 +28,7 @@ class Tweet < ActiveRecord::Base
           Tweet.find_by_twitter_tweet_id(self.in_reply_to_status_id).orig_tweet(depth+1)
        else
          p "orig_tweet: Can not find tweet from in_reply_to_status_id"
+         nil
        end
      end
    end
