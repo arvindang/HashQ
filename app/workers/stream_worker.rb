@@ -1,3 +1,5 @@
+require 'array'
+
 class StreamWorker
 
 
@@ -56,9 +58,6 @@ end
     new_poll = Poll.create(:tweet_id=>tweet.id, :twitter_tweet_id => tweet.twitter_tweet_id ,:question=>question, :answers=>answers_hash)
     log "created poll: #{new_poll}"
     
-    @tweet.twt_type="poll"
-    @tweet.save
-    
   end
 
   def self.poll_vote(tweet)
@@ -94,8 +93,7 @@ end
       oauth.send_tweet("@#{reply_name} #{msg}", :in_reply_to_status_id =>tweet.twitter_tweet_id)
   	  p "@#{reply_name} #{msg}"
   	end
-  	@tweet.twt_type="vote"
-    @tweet.save
+  
   end
 
   def self.poll_results(tweet)
@@ -153,8 +151,6 @@ end
     	log "Poll Results: deleted image from server"
     end
     
-    @tweet.twt_type="result"
-    @tweet.save
   end
 
 end

@@ -1,3 +1,5 @@
+require 'array'
+
 class Tweet < ActiveRecord::Base
 
   #after_create :save_poll_id
@@ -97,7 +99,7 @@ class Tweet < ActiveRecord::Base
             
       case self.roles_mask
         
-        when roles_value(%w[root_twt match_q])
+        when roles_value(%w[root_twt match_q inclues_q from_orig_twt_creater])
           #poll
           self.update_attribute(:twt_type,'poll')
           
@@ -152,7 +154,7 @@ class Tweet < ActiveRecord::Base
   
          
       unless [  'poll', 
-                'request_result', 
+                'result_request', 
                 'vote', 
                 'automatic_ignore_hashq', 
                 'automatic_ignore_poll_creater',
@@ -161,7 +163,7 @@ class Tweet < ActiveRecord::Base
         
         new_tweet=Twitter.new  
         reply_name=self.user['screen_name'] || ""    
-        #new_tweet.update("@#{reply_name} You made a mistake[error]: #{self.twt_type}", :in_reply_to_status_id =>self.twitter_tweet_id)
+        new_tweet.update("@#{reply_name} You made a mistake[error]: #{self.twt_type}", :in_reply_to_status_id =>self.twitter_tweet_id)
       end
          
   end
