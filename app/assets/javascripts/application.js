@@ -5,9 +5,9 @@
 // the compiled file.
 //
 //= require jquery
+//= require jquery-ui
 //= require jquery_ujs
 //= require_tree .
-
 
 
 
@@ -53,20 +53,20 @@ function limitChars(textid, limit, infodiv)
 	}
 }
 
+
 $(function(){
-	$("a[rel=popover]")
-	    .popover({
+
+	$('a[rel=popover]').popover({
 	      offset: 10
 	    })
 	    .click(function(e) {
-	      e.preventDefault()
+	      e.preventDefault();
     });
  
-
 		$('#q').keyup(function(){
  			limitChars('q', 140, 'charlimitinfo');
 			checkquestion('q','validquestion');
- 		})
+ 		});
 
 
 });

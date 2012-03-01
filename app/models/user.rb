@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   
   after_create :save_twitter_id 
   
-  has_many  :oauth1
+  has_many  :oauth
   
   
   # Include default devise modules. Others available are:

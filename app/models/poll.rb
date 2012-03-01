@@ -4,7 +4,7 @@ class Poll < ActiveRecord::Base
   serialize :answers
   
   #Creates a one to many relationship, can use "poll.replies" to get replies for poll
-  has_many :replies, :class_name => 'Tweet', :primary_key => 'poll_id',  :foreign_key => 'poll_id'
+  has_many :replies, :class_name => 'Tweet', :primary_key => 'id',  :foreign_key => 'poll_id'
   
   #Create a one to one relationship you can use "Poll.Tweet" to get original Tweet with question.
   belongs_to :tweet

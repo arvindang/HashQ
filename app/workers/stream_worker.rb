@@ -13,11 +13,14 @@ end
   def self.perform(twt_data)
     
     @tweet=Tweet.create(twt_data)
+    @tweet.process_twt_type
+      
     log "1) Created record of tweet: #{@tweet.text}"
  
     if @tweet.in_reply_to_user_id.blank? || @tweet.in_reply_to_status_id.nil?
       log "2) in_reply_to_user/tweeter id is blank, creating Poll process"
       poll_create(@tweet)
+   
     else
       
       log "2) In reply to: #{@tweet.in_reply_to_user_id}"
@@ -53,6 +56,9 @@ end
     new_poll = Poll.create(:tweet_id=>tweet.id, :twitter_tweet_id => tweet.twitter_tweet_id ,:question=>question, :answers=>answers_hash)
     log "created poll: #{new_poll}"
     
+    @tweet.twt_type="poll"
+    @tweet.save
+    
   end
 
   def self.poll_vote(tweet)
@@ -83,12 +89,13 @@ end
     unless fix_answers.nil?
       fix_answers.each {|i| list +="#{i};"} 
       list=list.chomp(";")
-      msg="Did you mean to vote [#{tweet.category}]? If not choose #{list}]."
+      msg="[Auto-reply] You voted [#{tweet.category}]? If incorrect, reply #{list}]."
       p oauth=Oauth.find_by_uid(tweet.orig_tweet.uid)
       oauth.send_tweet("@#{reply_name} #{msg}", :in_reply_to_status_id =>tweet.twitter_tweet_id)
   	  p "@#{reply_name} #{msg}"
   	end
-  	
+  	@tweet.twt_type="vote"
+    @tweet.save
   end
 
   def self.poll_results(tweet)
@@ -145,6 +152,9 @@ end
     	File.delete(file_path)
     	log "Poll Results: deleted image from server"
     end
+    
+    @tweet.twt_type="result"
+    @tweet.save
   end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111228205222) do
+ActiveRecord::Schema.define(:version => 20120301012437) do
 
   create_table "oauths", :force => true do |t|
     t.string   "provider"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(:version => 20111228205222) do
     t.integer  "import_uid"
     t.integer  "poll_id"
     t.string   "twt_type"
+    t.integer  "roles_mask"
   end
 
   create_table "users", :force => true do |t|

@@ -1,0 +1,35 @@
+
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Your #Q's</li>
+              <li class="active"><a href="#">Link</a></li>
+              
+					<%	@tweets.each do |i| %>
+						<li>
+							<%= link_to i.poll.question, polls_show_path(:id => i.poll.id) %>
+							<a href="#">#q <%= i.poll.question %>?</a>
+						</li>
+		            <% end %>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+
+
+         <%= 	render(	:partial => "main", 
+						:locals => { :object => @poll})%>
+
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; HashQ 2012</p>
+	  </footer>
+
+    </div><!--/.fluid-container-->
+    
+

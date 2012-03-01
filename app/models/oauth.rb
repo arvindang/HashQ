@@ -5,7 +5,7 @@ class Oauth < ActiveRecord::Base
   belongs_to              :user
 
   has_many :tweets, :class_name => 'Tweet', :primary_key => 'uid',  :foreign_key => 'uid'
-
+ # has_many :polls, :class_name => 'Poll', :primary_key => 'uid',  :foreign_key => 'twitter_tweet_id'
   
   def self.find_or_create_twitter(access_token)
     

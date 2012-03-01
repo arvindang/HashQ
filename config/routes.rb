@@ -1,6 +1,10 @@
 Hashqit::Application.routes.draw do
  
  
+  get "polls/index"
+
+  get "polls/show"
+
   resources :home, :only => [:index, :create]
   
   # create paths for devise users and direct to custom callback and registration

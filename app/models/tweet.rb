@@ -22,7 +22,7 @@ class Tweet < ActiveRecord::Base
   
   def orig_tweet(depth = 1)
      if depth == 100 || in_reply_to_status_id.nil?
-       self
+         self       
      else
        if Tweet.find_by_twitter_tweet_id(self.in_reply_to_status_id)
           Tweet.find_by_twitter_tweet_id(self.in_reply_to_status_id).orig_tweet(depth+1)
@@ -34,6 +34,7 @@ class Tweet < ActiveRecord::Base
    end
   
   def orig_poll
+    nil
     Poll.find_by_twitter_tweet_id((self.orig_tweet.twitter_tweet_id unless self.orig_tweet.nil?))
   end
   
@@ -79,10 +80,93 @@ class Tweet < ActiveRecord::Base
   end
 
   def process_twt_type
-    # enters the type of twwet, poll, new vote, revote, request for result, crap 
+   
+      poll_text=self.text
+      poll_regex=/#q([^?]+?)\?\s*((?:[^,]+(?:,|$))+)/i
+   
+      mask=[] 
+      mask << 'root_twt'                if self.in_reply_to_status_id.nil?
+      mask << 'match_q'                 unless poll_regex.match(poll_text).nil?
+      mask << 'has_poll'                unless self.orig_poll.nil?
+      mask << 'includes_r'              if self.text.downcase.include?('#r')
+      mask << 'includes_q'              if self.text.downcase.include?('#q')
+      mask << 'from_hashq'              if self.uid=='433563171'
+      mask << 'from_orig_twt_creater'   if self.uid==self.orig_tweet.uid
+    
+      self.roles=(mask)
+            
+      case self.roles_mask
+        
+        when roles_value(%w[root_twt match_q])
+          #poll
+          self.update_attribute(:twt_type,'poll')
+          
+          #Create Poll!
+          StreamWorker.poll_create(self)
+          
+        when roles_value(%w[match_q])
+          #poll_not_root_twt
+          self.update_attribute(:twt_type,'poll_not_root_twt')
+        
+        when roles_value(%w[root_twt includes_q])
+          #poll_no_match_q
+          self.update_attribute(:twt_type,'poll_no_match_q')
+        
+        when roles_value(%w[includes_q])
+          #poll_no_match_q_and_not_root_twt
+          self.update_attribute(:twt_type,'poll_no_match_q_and_not_root_twt')
+        
+        when roles_value(%w[includes_r has_poll from_orig_twt_creater])
+          #result_request
+          self.update_attribute(:twt_type,'result_request')
+          
+          # Process Results!
+          StreamWorker.poll_results(self)
+          
+        when roles_value(%w[includes_r has_poll])
+          #results_not_poll_creater
+          self.update_attribute(:twt_type,'results_not_poll_creater')
+        
+        when roles_value(%w[includes_r])
+          #results_no_poll_and_not_poll_creater
+          self.update_attribute(:twt_type,'results_no_poll_and_not_poll_creater')
+          
+        when roles_value(%w[has_poll from_hashq])
+          #automatic_ignore_hashq
+          self.update_attribute(:twt_type,'automatic_ignore_hashq')
+        
+        when roles_value(%w[has_poll from_orig_twt_creater])
+          #automatic_ignore_poll_creater
+          self.update_attribute(:twt_type,'automatic_ignore_poll_creater')
+        when roles_value(%w[has_poll])
+          #vote
+          self.update_attribute(:twt_type,'vote')
+          
+          # Process Vote!
+          StreamWorker.poll_vote(self)
+    	    
+        else
+          #tweet
+          self.update_attribute(:twt_type,'tweet')
+      end
+  
+         
+      unless [  'poll', 
+                'request_result', 
+                'vote', 
+                'automatic_ignore_hashq', 
+                'automatic_ignore_poll_creater',
+                'tweet'
+                ].include? self.twt_type
+        
+        new_tweet=Twitter.new  
+        reply_name=self.user['screen_name'] || ""    
+        #new_tweet.update("@#{reply_name} You made a mistake[error]: #{self.twt_type}", :in_reply_to_status_id =>self.twitter_tweet_id)
+      end
+         
   end
   
-    
+  
   def category_match
     mypoll=self.orig_poll
     
@@ -129,5 +213,41 @@ class Tweet < ActiveRecord::Base
 
 
 
+#### Tweet Attributes Roles to identify Tweet Type #####
 
+
+#Define Tweet Atrributes in ROLES
+ROLES = %w[  root_twt
+             match_q
+             has_poll
+             includes_r
+             includes_q
+             from_hashq
+             from_orig_twt_creater
+          ]
+    
+
+    # Create scope to query based on role_mask
+    scope :with_role, lambda { |role| {:conditions => "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
+    
+    # Note: (2**==2^, "roles & ROLES" is a bitmask "AND" operator that returns the mask value or 0)
+
+    # Assign Roles to roles_mask field 
+    def roles=(roles)
+      self.roles_mask = roles_value(roles)
+    end
+
+    def roles_value(roles)
+      (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
+    end
+
+    # Returns the items in the bit mask (decodes the bitmask)
+    def roles
+      ROLES.reject { |r| ((roles_mask || 0) & 2**ROLES.index(r)).zero? }
+    end
+
+    # Not used as far as I can see
+    def role_symbols
+      roles.map(&:to_sym)
+    end
 end
