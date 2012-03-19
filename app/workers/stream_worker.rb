@@ -7,10 +7,10 @@ class StreamWorker
 
   #include Amatch
  
-def self.log(message)
-  Rails.logger.info "[#{Time.now}] [Process #{$$}] [Stream Worker] #{message}"
-  Rails.logger.flush
-end
+  def self.log(message)
+    Rails.logger.info "[#{Time.now}] [Process #{$$}] [Stream Worker] #{message}"
+    Rails.logger.flush
+  end
  
   def self.perform(twt_data)
     
@@ -34,6 +34,13 @@ end
   	    poll_vote(@tweet)
       end
     end
+  end
+  
+###################################################################
+  # Methods for TDD
+  
+  def self.contain_hash_r?(tweet)
+    tweet.text.include?("#r")
   end
   
 ###################################################################

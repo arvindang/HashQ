@@ -6,7 +6,7 @@ gem 'rails', '3.1.1'
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
-gem 'mysql2'
+
 
 #Gems needed parsing, streaming, charting and pattern matching
 gem 'googlecharts'  #Charts
@@ -35,6 +35,10 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+group :production do
+  gem 'mysql2'
+end
+
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
@@ -45,6 +49,7 @@ gem 'jquery-rails'
 
 group :development do
   gem 'capistrano'
+  gem 'fabrication'
 end
 
 # To use debugger
@@ -54,4 +59,5 @@ group :test do
   # Pretty printed test output
   gem 'turn', :require => false
   gem 'rspec-rails', '~> 2.9.0'
+  gem 'fabrication'
 end
