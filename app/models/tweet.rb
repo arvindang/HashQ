@@ -97,57 +97,57 @@ class Tweet < ActiveRecord::Base
     
       self.roles=(mask)
             
-      case self.roles_mask
+      a = self.roles_mask
         
-        when roles_value(%w[root_twt match_q inclues_q from_orig_twt_creater])
+      if a & roles_value(%w[root_twt match_q inclues_q from_orig_twt_creater]) > 0
           #poll
           self.update_attribute(:twt_type,'poll')
           
           #Create Poll!
           StreamWorker.poll_create(self)
           
-        when roles_value(%w[match_q])
+      elsif a & roles_value(%w[match_q]) > 0
           #poll_not_root_twt
           self.update_attribute(:twt_type,'poll_not_root_twt')
         
-        when roles_value(%w[root_twt includes_q])
+      elsif a & roles_value(%w[root_twt includes_q]) > 0
           #poll_no_match_q
           self.update_attribute(:twt_type,'poll_no_match_q')
         
-        when roles_value(%w[includes_q])
+      elsif a & roles_value(%w[includes_q]) > 0
           #poll_no_match_q_and_not_root_twt
           self.update_attribute(:twt_type,'poll_no_match_q_and_not_root_twt')
         
-        when roles_value(%w[includes_r has_poll from_orig_twt_creater])
+      elsif a & roles_value(%w[includes_r has_poll from_orig_twt_creater]) > 0
           #result_request
           self.update_attribute(:twt_type,'result_request')
           
           # Process Results!
           StreamWorker.poll_results(self)
           
-        when roles_value(%w[includes_r has_poll])
+      elsif a & roles_value(%w[includes_r has_poll]) > 0
           #results_not_poll_creater
           self.update_attribute(:twt_type,'results_not_poll_creater')
         
-        when roles_value(%w[includes_r])
+      elsif a & roles_value(%w[includes_r]) > 0
           #results_no_poll_and_not_poll_creater
           self.update_attribute(:twt_type,'results_no_poll_and_not_poll_creater')
           
-        when roles_value(%w[has_poll from_hashq])
+      elsif a & roles_value(%w[has_poll from_hashq]) > 0
           #automatic_ignore_hashq
           self.update_attribute(:twt_type,'automatic_ignore_hashq')
         
-        when roles_value(%w[has_poll from_orig_twt_creater])
+      elsif a & roles_value(%w[has_poll from_orig_twt_creater]) > 0
           #automatic_ignore_poll_creater
           self.update_attribute(:twt_type,'automatic_ignore_poll_creater')
-        when roles_value(%w[has_poll])
+      elsif a & roles_value(%w[has_poll]) > 0
           #vote
           self.update_attribute(:twt_type,'vote')
           
           # Process Vote!
           StreamWorker.poll_vote(self)
     	    
-        else
+      else
           #tweet
           self.update_attribute(:twt_type,'tweet')
       end
