@@ -139,11 +139,11 @@ class Tweet < ActiveRecord::Base
           #results_no_poll_and_not_poll_creater
           self.update_attribute(:twt_type,'results_no_poll_and_not_poll_creater')
           
-      when bit_test(roles_value(%w[has_poll from_hashq]),a)
+      when bit_test(roles_value(%w[from_hashq]),a)
           #automatic_ignore_hashq
           self.update_attribute(:twt_type,'automatic_ignore_hashq')
         
-      when bit_test(roles_value(%w[has_poll from_orig_twt_creater]),a)
+      when bit_test(roles_value(%w[from_orig_twt_creater]),a)
           #automatic_ignore_poll_creater
           self.update_attribute(:twt_type,'automatic_ignore_poll_creater')
       when bit_test(roles_value(%w[has_poll]),a)

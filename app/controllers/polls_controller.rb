@@ -17,9 +17,17 @@ class PollsController < ApplicationController
 
   def show
     @user = current_user
-    @poll=Poll.find(params[:id])
+    @poll= Poll.find(params[:id])
+    
     @answers=pa(@poll)
-    render :layout => 'poll_layout'
+    
+    render(	:partial => "main", 
+						:locals => { :object => @poll})
+    
+    # respond_to do |format|
+    #       format.html # show.html.erb
+    #       format.json { render json: @poll }
+    #     end
   end
 
 
