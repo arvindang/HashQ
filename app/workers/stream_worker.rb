@@ -15,8 +15,11 @@ end
   def self.perform(twt_data)
     
     @tweet=Tweet.create(twt_data)
-    @tweet.process_twt_type
-      
+    if @tweet
+      @tweet.process_twt_type
+    else
+      log "No tweet available"
+    end
   end
   
 ###################################################################
