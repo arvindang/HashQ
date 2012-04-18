@@ -101,14 +101,14 @@ class Tweet < ActiveRecord::Base
             
       case true
         
-      when bit_test(roles_value(%w[root_twt match_q inclues_q from_orig_twt_creater]),a)
+      when bit_test(roles_value(%w[root_twt match_q includes_q from_orig_twt_creater]),a)
           #poll
           self.update_attribute(:twt_type,'poll')
           
           #Create Poll!
           StreamWorker.poll_create(self)
           
-      when bit_test(roles_value(%w[root_twt inclues_q from_orig_twt_creater]),a)
+      when bit_test(roles_value(%w[root_twt includes_q from_orig_twt_creater]),a)
             #poll_not_root_twt
             self.update_attribute(:twt_type,'poll_not_match_q')
       
