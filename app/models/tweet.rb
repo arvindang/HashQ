@@ -96,58 +96,64 @@ class Tweet < ActiveRecord::Base
       mask << 'from_orig_twt_creater'   if self.uid==self.orig_tweet.uid
     
       self.roles=(mask)
+      
+      a = self.roles_mask
             
-      case self.roles_mask
+      case true
         
-        when roles_value(%w[root_twt match_q inclues_q from_orig_twt_creater])
+      when bit_test(roles_value(%w[root_twt match_q includes_q from_orig_twt_creater]),a)
           #poll
           self.update_attribute(:twt_type,'poll')
           
           #Create Poll!
           StreamWorker.poll_create(self)
           
-        when roles_value(%w[match_q])
+      when bit_test(roles_value(%w[root_twt includes_q from_orig_twt_creater]),a)
+            #poll_not_root_twt
+            self.update_attribute(:twt_type,'poll_not_match_q')
+      
+      when bit_test(roles_value(%w[match_q]),a)
           #poll_not_root_twt
-          self.update_attribute(:twt_type,'poll_not_root_twt')
+          self.update_attribute(:twt_type,'poll_not_root_twt_no_from_orig_twt_creater')
         
-        when roles_value(%w[root_twt includes_q])
+      when bit_test(roles_value(%w[root_twt includes_q]),a)
           #poll_no_match_q
-          self.update_attribute(:twt_type,'poll_no_match_q')
+          self.update_attribute(:twt_type,'poll_no_match_q_no_from_orig_twt_creater')
         
-        when roles_value(%w[includes_q])
+      when bit_test(roles_value(%w[includes_q]),a)
           #poll_no_match_q_and_not_root_twt
           self.update_attribute(:twt_type,'poll_no_match_q_and_not_root_twt')
         
-        when roles_value(%w[includes_r has_poll from_orig_twt_creater])
+      when bit_test(roles_value(%w[includes_r has_poll from_orig_twt_creater]),a) 
           #result_request
           self.update_attribute(:twt_type,'result_request')
           
           # Process Results!
           StreamWorker.poll_results(self)
           
-        when roles_value(%w[includes_r has_poll])
+      when bit_test(roles_value(%w[includes_r has_poll]),a)
           #results_not_poll_creater
           self.update_attribute(:twt_type,'results_not_poll_creater')
         
-        when roles_value(%w[includes_r])
+      when bit_test(roles_value(%w[includes_r]),a)
           #results_no_poll_and_not_poll_creater
           self.update_attribute(:twt_type,'results_no_poll_and_not_poll_creater')
           
-        when roles_value(%w[has_poll from_hashq])
+      when bit_test(roles_value(%w[from_hashq]),a)
           #automatic_ignore_hashq
           self.update_attribute(:twt_type,'automatic_ignore_hashq')
         
-        when roles_value(%w[has_poll from_orig_twt_creater])
+      when bit_test(roles_value(%w[from_orig_twt_creater]),a)
           #automatic_ignore_poll_creater
           self.update_attribute(:twt_type,'automatic_ignore_poll_creater')
-        when roles_value(%w[has_poll])
+      when bit_test(roles_value(%w[has_poll]),a)
           #vote
           self.update_attribute(:twt_type,'vote')
           
           # Process Vote!
           StreamWorker.poll_vote(self)
     	    
-        else
+      else
           #tweet
           self.update_attribute(:twt_type,'tweet')
       end
@@ -251,5 +257,9 @@ ROLES = %w[  root_twt
     # Not used as far as I can see
     def role_symbols
       roles.map(&:to_sym)
+    end
+    
+    def bit_test(required,mask)
+     required == mask & required
     end
 end
